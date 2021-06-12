@@ -119,23 +119,27 @@ void lihatbuku(){
 	
 	
 	ifstream Archive;
-	Archive.open(filename,ios::out);
+	Archive.open(filename, ios::out);
 	
 	if(Archive.is_open()){
 		cout<< "=====[Lihat data Buku]=====" << endl;
 		cout<<"Jumlah data yang ingin dilihat (Maks "<<jumlahbuku<<")= ";cin>>jumlahdata;
 		for(a=0;a<jumlahdata;a++){
-		cout<<"Data ke "<<a+1<<endl;
-		cout<<endl;
-		cout<<"Id Buku	   :"<<buku[a].idbuku;
-		cout<<endl;
-		cout<<"Judul Buku  	   :"<<buku[a].judul;
-		cout<<endl;
-		cout<<"Harga buku    :"<<buku[a].harga;
-		cout<<endl;
-		cout<<"Author / Penulis buku    :"<<buku[a].author;
-		cout<<endl;
-	}
+            getline(Archive, buku[a].idbuku);
+            getline(Archive, buku[a].judul);
+            getline(Archive, buku[a].author);
+
+            cout<<"Data ke "<<a+1<<endl;
+            cout<<endl;
+            cout<<"Id Buku               :"<<buku[a].idbuku;
+            cout<<endl;
+            cout<<"Judul Buku            :"<<buku[a].judul;
+            cout<<endl;
+            cout<<"Harga buku            :"<<buku[a].harga;
+            cout<<endl;
+            cout<<"Author / Penulis buku :"<<buku[a].author;
+            cout<<endl;
+        }
 	}else{
 		cout<<"\nFile tidak dapat dibuka!";
 	}	

@@ -11,11 +11,12 @@
 using namespace std;
 
 string keyword;
-int mainmenu,jumlahinput,jumlahdata;
-int a,i,jumlahbuku=0;
+int mainmenu,jumlahinput,jumlahdata,searchmethod;
+int a,i=0;
+int jumlahbuku;
 bool found;
 char jwb;
-char filename[10];
+char filename[50];
 void lihatbuku();
 void inputbuku();
 void searching();
@@ -24,6 +25,8 @@ void transaksi();
 void pilihan();
 void binarysearch();
 void seqsearch();
+void bubblesort2();
+void tampil();
 
 //-------------
 
@@ -37,6 +40,7 @@ typedef struct{
 
 data_buku buku[999];
 
+int jumlahbukufile;
 
 //-------------
 void pilihan(){
@@ -89,9 +93,12 @@ ofstream Archive;
     cout<<"Masukan nama file :";cin>>filename;
     Archive.open(filename,ios::out);
     cout<< "=====[Input data Buku]=====" <<endl;
+    
     if (Archive.is_open()) {
     do{
         cout<<"Jumlah input data = ";cin>>jumlahinput;
+        jumlahbukufile = jumlahbukufile + jumlahinput;
+		Archive<<jumlahbukufile<<endl;
         for(a=0;a<jumlahinput;a++)
         {
         cout<<"Data ke "<<a+1<<endl;
@@ -103,10 +110,10 @@ ofstream Archive;
         }
         cout <<"input lagi? (Y/N)"; cin>>jwb;
     }while (jwb=='Y'||jwb=='y');
-    }
-    else 
+    }else 
     cout<<"\nFile tidak dapat diciptakan!";
-
+	cout<<"Jumlahbuku : "<<jumlahbukufile<<endl;
+	//jumlahbuku = jumlahbuku+jumlahinput;
     Archive.close();
     system("pause");
     pilihan();
@@ -119,27 +126,34 @@ void lihatbuku(){
 	
 	
 	ifstream Archive;
-	Archive.open(filename,ios::out);
-	
+	Archive.open(filename, ios::out);
+	Archive>>jumlahbukufile;
 	if(Archive.is_open()){
 		cout<< "=====[Lihat data Buku]=====" << endl;
-		cout<<"Jumlah data yang ingin dilihat (Maks "<<jumlahbuku<<")= ";cin>>jumlahdata;
+		cout<<"Jumlah data yang ingin dilihat (Maks "<<jumlahbukufile<<")= ";cin>>jumlahdata;
 		for(a=0;a<jumlahdata;a++){
-		cout<<"Data ke "<<a+1<<endl;
-		cout<<endl;
-		cout<<"Id Buku	   :"<<buku[a].idbuku;
-		cout<<endl;
-		cout<<"Judul Buku  	   :"<<buku[a].judul;
-		cout<<endl;
-		cout<<"Harga buku    :"<<buku[a].harga;
-		cout<<endl;
-		cout<<"Author / Penulis buku    :"<<buku[a].author;
-		cout<<endl;
-	}
+			Archive.ignore();
+            getline(Archive, buku[a].idbuku);
+            getline(Archive, buku[a].judul);
+            Archive >> buku[a].harga;
+            Archive.ignore();
+            getline(Archive, buku[a].author);
+
+            cout<<"\nData ke "<<a+1<<endl;
+            cout<<endl;
+            cout<<"Id Buku               :"<<buku[a].idbuku;
+            cout<<endl;
+            cout<<"Judul Buku            :"<<buku[a].judul;
+            cout<<endl;
+            cout<<"Harga buku            :"<<buku[a].harga;
+            cout<<endl;
+            cout<<"Author / Penulis buku :"<<buku[a].author;
+            cout<<endl;
+        }
 	}else{
 		cout<<"\nFile tidak dapat dibuka!";
-	}	
-	
+	}
+	cout<<"Jumlahbuku : "<<jumlahbukufile<<endl;
 	Archive.close();
 	system("pause");
 	pilihan();
@@ -147,31 +161,91 @@ void lihatbuku(){
 
 void searching(){
 	system ("cls");
-	cout<<"=====[Cari Buku]====="<<endl;
-    cin.ignore();
-    cout<<"Id buku   : "; getline(cin, keyword);
-    found=false;
-    while((i<=jumlahbuku) & (!found)){
-        if(keyword==buku[i].idbuku)
-            found=true;
-        else
-            i=i+1;
-    }
-    if(found){
-        cout<<"Id buku            	: " << buku[i].idbuku << endl;
-        cout<<"Judul buku         	: " << buku[i].judul << endl;
-        cout<<"Harga buku			: " << buku[i].harga << endl;
-        cout<<"Author/Penulis buku	: " << buku[i].author << endl;
-    }
-    else{
-        cout << keyword << " tidak ditemukan dalam data" << endl;
-    }
-    cout<<endl;
+	cout<<"---------------------------"<<endl;
+	cout<<"          TOKO BUKU        "<<endl;
+	cout<<"---------------------------"<<endl;
+	cout<<"\n";
+	cout<<"1. Sequential Search \n2. Binary Search \n3. Kembali ke menu"<<endl;
+	cout<<"\n";
+	cout<<"Masukan Pilihan: "; cin>>mainmenu;
+	cout<<"---------------------------"<<endl;
+	switch(mainmenu)
+	{
+	case 1:
+		seqsearch();
+	break;
+	
+	case 2:  
+		binarysearch(); 
+	break;
+	case 3:
+		pilihan();
+	break;
+	default:
+		cout<<"Menu tidak tersedia!"<<endl;
+		system("pause");
+		pilihan();
+	break;
+	}
+}
+
+void binarysearch(){
+	
+}
+void seqsearch(){
+	system ("cls");
+	cout<<"Masukan nama file :";cin>>filename;	
+	
+	
+	ifstream Archive;
+	Archive.open(filename, ios::out);
+			Archive >> jumlahbukufile;
+			
+        cout<<jumlahbukufile<<endl;
+	if(Archive.is_open()){
+		
+		cout<<"=====[Cari Buku]====="<<endl;
+    	cin.ignore();
+    	cout<<"Judul Buku   : "; getline(cin, keyword);
+    	found=false;
+    	while((i<jumlahbukufile) & (!found)){
+    			Archive.ignore();
+				getline(Archive, buku[i].idbuku);
+	            getline(Archive, buku[i].judul);
+	            Archive >> buku[i].harga;
+	            Archive.ignore();
+	            getline(Archive, buku[i].author);
+	        if(keyword==buku[i].judul)
+	            found=true;
+	        else
+	            i=i+1;
+    	}
+    	if(found){
+        	cout<<"Judul                	: " << buku[i].judul << endl;
+        	cout<<"Harga buku             	: " << buku[i].harga << endl;
+        	cout<<"Author/Penulis buku      : " << buku[i].author << endl;
+        	cout<<endl;
+    	}else{
+        	cout << keyword << " tidak ditemukan dalam data" << endl;
+    	}	
+	}else{
+		cout<<"\nFile tidak dapat dibuka!";
+	}
+	cout<<i<<jumlahbukufile;
+    Archive.close();
     system("pause");
     pilihan();
 }
 
+void tampil(){
+	
+}
+
 void sorting(){
+	
+}
+
+void bubblesort2(){
 	
 }
 
